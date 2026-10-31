@@ -4,3 +4,4 @@ main: com.fserver.lobbyspawn.LobbySpawnPaper
 api-version: '1.21'
 author: F-Server
 description: Teleports players to the configured lobby spawn when signalled by Velocity.
+depend: [AuthMe]
