@@ -1,3 +1,4 @@
+
 package com.fserver.lobbyspawn;
 
 import com.google.inject.Inject;
@@ -27,18 +28,24 @@ public final class LobbySpawnVelocity {
 
     @Subscribe
     public void onServerPostConnect(ServerPostConnectEvent event) {
-        if (event.getPreviousServer() == null) return;
-        String from = event.getPreviousServer().getServerInfo().getName();
-        if (!"minecraft".equalsIgnoreCase(from)) return;
-
         ServerConnection current = event.getPlayer().getCurrentServer().orElse(null);
         if (current == null) return;
+
         String to = current.getServerInfo().getName();
         if (!"lobby".equalsIgnoreCase(to)) return;
 
-        // Sent only after a real minecraft -> lobby switch; first login/Limbo is untouched.
-        current.sendPluginMessage(CHANNEL, new byte[] { 1 });
-        logger.info("Requested lobby spawn for {} after minecraft -> lobby switch.",
-                event.getPlayer().getUsername());
+        ServerConnection previous = event.getPreviousServer();
+
+        // First connection to the lobby, or a return from Minecraft.
+        if (previous == null ||
+                "minecraft".equalsIgnoreCase(previous.getServerInfo().getName())) {
+
+            current.sendPluginMessage(CHANNEL, new byte[] { 1 });
+
+            logger.info("Requested lobby spawn for {}. Previous server: {}",
+                    event.getPlayer().getUsername(),
+                    previous == null ? "none (first connection)" :
+                            previous.getServerInfo().getName());
+        }
     }
 }
