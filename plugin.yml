@@ -1,0 +1,6 @@
+name: FServerLobbySpawn
+version: 1.0.0
+main: com.fserver.lobbyspawn.LobbySpawnPaper
+api-version: '1.21'
+author: F-Server
+description: Teleports players to the configured lobby spawn when signalled by Velocity.
