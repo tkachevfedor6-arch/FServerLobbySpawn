@@ -1,6 +1,6 @@
+
 package com.fserver.lobbyspawn;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -25,24 +25,25 @@ public final class LobbySpawnPaper extends JavaPlugin implements PluginMessageLi
     @Override
     public void onPluginMessageReceived(String channel, Player player, byte[] message) {
         if (!CHANNEL.equals(channel) || message.length != 1 || message[0] != 1) return;
-        // Defer one server tick so Paper has completed the backend join transition.
-        Bukkit.getScheduler().runTask(this, () -> {
-            if (!player.isOnline()) return;
-            String worldName = getConfig().getString("spawn.world", "world");
-            World world = Bukkit.getWorld(worldName);
-            if (world == null) {
-                getLogger().warning("Configured spawn world '" + worldName + "' is not loaded.");
-                return;
-            }
-            Location spawn = new Location(
-                    world,
-                    getConfig().getDouble("spawn.x"),
-                    getConfig().getDouble("spawn.y"),
-                    getConfig().getDouble("spawn.z"),
-                    (float) getConfig().getDouble("spawn.yaw"),
-                    (float) getConfig().getDouble("spawn.pitch")
-            );
-            player.teleport(spawn);
-        });
+        if (!player.isOnline()) return;
+
+        String worldName = getConfig().getString("spawn.world", "world");
+        World world = getServer().getWorld(worldName);
+
+        if (world == null) {
+            getLogger().warning("Configured spawn world '" + worldName + "' is not loaded.");
+            return;
+        }
+
+        Location spawn = new Location(
+                world,
+                getConfig().getDouble("spawn.x"),
+                getConfig().getDouble("spawn.y"),
+                getConfig().getDouble("spawn.z"),
+                (float) getConfig().getDouble("spawn.yaw"),
+                (float) getConfig().getDouble("spawn.pitch")
+        );
+
+        player.teleport(spawn);
     }
 }
