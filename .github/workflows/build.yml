@@ -1,0 +1,53 @@
+
+name: Build plugin JARs
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      - name: Prepare project structure
+        run: |
+          mkdir -p velocity/src/main/java/com/fserver/lobbyspawn
+          mkdir -p velocity/src/main/resources
+          mkdir -p paper/src/main/java/com/fserver/lobbyspawn
+          mkdir -p paper/src/main/resources
+
+          cp "pom (1).xml" pom.xml
+          cp "pom.xml" velocity/pom.xml
+          cp "pom (2).xml" paper/pom.xml
+
+          cp LobbySpawnVelocity.java velocity/src/main/java/com/fserver/lobbyspawn/
+          cp velocity-plugin.json velocity/src/main/resources/
+
+          cp LobbySpawnPaper.java paper/src/main/java/com/fserver/lobbyspawn/
+          cp plugin.yml paper/src/main/resources/
+          cp config.yml paper/src/main/resources/
+
+      - name: Build both plugins
+        run: mvn -B -ntp clean package
+
+      - name: Upload JARs
+        uses: actions/upload-artifact@v4
+        with:
+          name: FServerLobbySpawn-JARs
+          path: |
+            velocity/target/*.jar
+            paper/target/*.jar
+          if-no-files-found: error
