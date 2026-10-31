@@ -57,11 +57,12 @@ public final class LobbySpawnPaper extends JavaPlugin implements PluginMessageLi
 
         getLogger().info("Teleporting " + player.getName() + " to " + spawn);
 
-        getServer().getScheduler().runTask(this, () -> {
+        // Wait 1 second so the player finishes joining the lobby.
+        getServer().getScheduler().runTaskLater(this, () -> {
             if (!player.isOnline()) return;
 
             boolean success = player.teleport(spawn);
             getLogger().info("Teleport result for " + player.getName() + ": " + success);
-        });
+        }, 20L);
     }
 }
