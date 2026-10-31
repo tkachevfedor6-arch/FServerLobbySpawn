@@ -7,6 +7,7 @@ import com.velocitypowered.api.event.player.ServerPostConnectEvent;
 import com.velocitypowered.api.plugin.Plugin;
 import com.velocitypowered.api.proxy.ProxyServer;
 import com.velocitypowered.api.proxy.ServerConnection;
+import com.velocitypowered.api.proxy.server.RegisteredServer;
 import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import org.slf4j.Logger;
 
@@ -34,9 +35,8 @@ public final class LobbySpawnVelocity {
         String to = current.getServerInfo().getName();
         if (!"lobby".equalsIgnoreCase(to)) return;
 
-        ServerConnection previous = event.getPreviousServer();
+        RegisteredServer previous = event.getPreviousServer();
 
-        // First connection to the lobby, or a return from Minecraft.
         if (previous == null ||
                 "minecraft".equalsIgnoreCase(previous.getServerInfo().getName())) {
 
