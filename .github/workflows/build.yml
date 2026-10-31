@@ -1,4 +1,3 @@
-
 name: Build plugin JARs
 
 on:
@@ -22,7 +21,6 @@ jobs:
           java-version: '25'
           cache: maven
 
-      
       - name: Prepare project structure
         run: |
           mkdir -p velocity/src/main/java/com/fserver/lobbyspawn
@@ -41,9 +39,28 @@ jobs:
           cp plugin.yml paper/src/main/resources/
           cp config.yml paper/src/main/resources/
 
-
       - name: Build both plugins
         run: mvn -B -ntp clean package
+
+      - name: Verify plugin JARs
+        run: |
+          echo "=== JAR FILES ==="
+          find velocity/target paper/target -name "*.jar" -type f -printf "%p (%s bytes)\n"
+
+          echo "=== SHA256 ==="
+          sha256sum velocity/target/*.jar paper/target/*.jar
+
+          echo "=== VELOCITY CONTENTS ==="
+          jar tf velocity/target/*.jar
+
+          echo "=== PAPER CONTENTS ==="
+          jar tf paper/target/*.jar
+
+          echo "=== CHECK MAIN CLASSES ==="
+          jar tf velocity/target/*.jar | grep "com/fserver/lobbyspawn/LobbySpawnVelocity.class"
+          jar tf paper/target/*.jar | grep "com/fserver/lobbyspawn/LobbySpawnPaper.class"
+
+          echo "=== CHECK COMPLETE ==="
 
       - name: Upload JARs
         uses: actions/upload-artifact@v4
