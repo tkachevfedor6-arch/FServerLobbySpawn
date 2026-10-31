@@ -2,6 +2,7 @@
   "id": "fserverlobbyspawn",
   "name": "FServerLobbySpawn",
   "version": "1.0.0",
+  "main": "com.fserver.lobbyspawn.LobbySpawnVelocity",
   "description": "Sends a lobby-spawn signal after minecraft -> lobby switches.",
   "authors": ["F-Server"]
 }
